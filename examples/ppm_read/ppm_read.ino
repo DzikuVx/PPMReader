@@ -1,6 +1,7 @@
 #include "PPMReader.h"
+#include <PinChangeInterrupt.h>
 
-PPMReader ppmReader(2, 0);
+PPMReader ppmReader(2, 0, MODE_INTERRUPT);
 
 void setup()
 {

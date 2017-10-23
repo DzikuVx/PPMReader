@@ -10,16 +10,26 @@ License: GNU GPL v3
 
 #include "PPMReader.h"
 #include "Arduino.h"
+#include <PinChangeInterrupt.h>
 
 volatile int PPMReader::ppm[PMM_CHANNEL_COUNT];
 
-PPMReader::PPMReader(int pin, int interrupt)
+PPMReader::PPMReader(int pin, int interrupt, int mode)
 {
     _pin = pin;
     _interrupt = interrupt;
+    _mode = mode;
 
-    pinMode(_pin, INPUT);
-    attachInterrupt(_interrupt, PPMReader::handler, CHANGE);
+    for (uint8_t i = 0; i < PMM_CHANNEL_COUNT; i++) {
+        ppm[i] = 0;
+    }
+
+    if (mode == MODE_INTERRUPT) {
+        pinMode(_pin, INPUT);
+        attachInterrupt(_interrupt, PPMReader::handler, CHANGE);
+    } else if (mode == MODE_PIN_CHANGE_INTERRUPT) {
+        attachPinChangeInterrupt(pin, PPMReader::handler, CHANGE);
+    }
 }
 
 int PPMReader::get(uint8_t channel)

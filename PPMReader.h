@@ -15,10 +15,15 @@ License: GNU GPL v3
 
 #define PMM_CHANNEL_COUNT 16
 
+enum InterruptModes {
+  MODE_INTERRUPT,
+  MODE_PIN_CHANGE_INTERRUPT
+};
+
 class PPMReader
 {
   public:
-    PPMReader(int pin, int interrupt);
+    PPMReader(int pin, int interrupt, int mode);
     int get(uint8_t channel);
     static void handler();
     volatile static int ppm[PMM_CHANNEL_COUNT];
@@ -27,6 +32,7 @@ class PPMReader
   private:
     int _pin;
     int _interrupt;
+    int _mode;
 };
 
 #endif
